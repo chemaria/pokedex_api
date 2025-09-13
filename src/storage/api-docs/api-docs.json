@@ -1,0 +1,308 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mini Pokédex API",
+        "description": "API REST para gestionar información de Pokémon siguiendo principios de Clean Architecture",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080",
+            "description": "Servidor de desarrollo"
+        }
+    ],
+    "paths": {
+        "/api/pokemon": {
+            "get": {
+                "tags": [
+                    "Pokemon"
+                ],
+                "summary": "Listar todos los Pokémon",
+                "description": "Obtiene una lista de todos los Pokémon registrados",
+                "operationId": "51b61e1a5b7b8ac8eedf35b5c1fbd0e9",
+                "responses": {
+                    "200": {
+                        "description": "Lista de Pokémon obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Pokemon"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 10
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Pokemon"
+                ],
+                "summary": "Crear nuevo Pokémon",
+                "description": "Crea un nuevo Pokémon con la información proporcionada",
+                "operationId": "be46c0e84f92266bcee6e6c0199e3b97",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePokemonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pokémon creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Pokemon"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Datos inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid Pokemon data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pokemon HP must be between 1 and 100"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                }
+            }
+        },
+        "/api/pokemon/{id}": {
+            "get": {
+                "tags": [
+                    "Pokemon"
+                ],
+                "summary": "Obtener Pokémon por ID",
+                "description": "Obtiene la información de un Pokémon específico por su ID",
+                "operationId": "1c1a631128b320a294cd43c51d588d75",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del Pokémon",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pokémon encontrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Pokemon"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pokémon no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Pokemon not found"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pokemon with ID 999 not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Pokemon": {
+                "title": "Pokemon",
+                "description": "Modelo de un Pokémon",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Pikachu"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "Electric",
+                            "Fire",
+                            "Water",
+                            "Grass",
+                            "Rock",
+                            "Flying",
+                            "Bug",
+                            "Normal",
+                            "Fighting",
+                            "Poison",
+                            "Ground",
+                            "Psychic",
+                            "Ice",
+                            "Dragon",
+                            "Dark",
+                            "Steel",
+                            "Fairy"
+                        ],
+                        "example": "Electric"
+                    },
+                    "hp": {
+                        "type": "integer",
+                        "maximum": 100,
+                        "minimum": 1,
+                        "example": 35
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "wild",
+                            "captured"
+                        ],
+                        "example": "captured"
+                    }
+                },
+                "type": "object"
+            },
+            "CreatePokemonRequest": {
+                "title": "Crear Pokémon Request",
+                "description": "Datos requeridos para crear un nuevo Pokémon",
+                "required": [
+                    "name",
+                    "type",
+                    "hp"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "example": "Charizard"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "Electric",
+                            "Fire",
+                            "Water",
+                            "Grass",
+                            "Rock",
+                            "Flying",
+                            "Bug",
+                            "Normal",
+                            "Fighting",
+                            "Poison",
+                            "Ground",
+                            "Psychic",
+                            "Ice",
+                            "Dragon",
+                            "Dark",
+                            "Steel",
+                            "Fairy"
+                        ],
+                        "example": "Fire"
+                    },
+                    "hp": {
+                        "type": "integer",
+                        "maximum": 100,
+                        "minimum": 1,
+                        "example": 78
+                    },
+                    "status": {
+                        "description": "Estado de captura (por defecto: wild)",
+                        "type": "string",
+                        "enum": [
+                            "wild",
+                            "captured"
+                        ],
+                        "example": "wild"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Pokemon",
+            "description": "Pokemon"
+        }
+    ]
+}
