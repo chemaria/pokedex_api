@@ -5,6 +5,7 @@ namespace App\Pokemon\Infrastructure\Http\Controller;
 use App\Http\Controllers\Controller;
 use App\Pokemon\Application\Command\Create\CreatePokemonHandler;
 use App\Pokemon\Application\Command\Create\CreatePokemonRequest;
+use App\Shared\Application\Middleware\TransactionalCommandMiddleware;
 use App\Pokemon\Application\Query\GetById\GetPokemonByIdHandler;
 use App\Pokemon\Application\Query\GetById\GetPokemonByIdQuery;
 use App\Pokemon\Application\Query\List\ListPokemonHandler;
@@ -31,7 +32,8 @@ class PokemonController extends Controller
     public function __construct(
         private readonly CreatePokemonHandler $createHandler,
         private readonly ListPokemonHandler $listHandler,
-        private readonly GetPokemonByIdHandler $getByIdHandler
+        private readonly GetPokemonByIdHandler $getByIdHandler,
+        private readonly TransactionalCommandMiddleware $transactionalMiddleware
     ) {
     }
 
@@ -185,7 +187,9 @@ class PokemonController extends Controller
                 status: $validated['status']
             );
 
-            $result = $this->createHandler->handle($command);
+            $result = $this->transactionalMiddleware->execute(
+                fn () => $this->createHandler->handle($command)
+            );
 
             return response()->json([
                 'data' => new PokemonResource($result->pokemon)
