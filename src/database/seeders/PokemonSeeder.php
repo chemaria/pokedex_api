@@ -38,7 +38,31 @@ class PokemonSeeder extends Seeder
                 'type' => 'Grass',
                 'hp' => 80,
                 'status' => 'wild'
-            ]
+            ],
+            [
+                'name' => 'Bulbasaur',
+                'type' => 'Grass',
+                'hp' => 60,
+                'status' => 'captured'
+            ],
+            [
+                'name' => 'Squirtle',
+                'type' => 'Water',
+                'hp' => 91,
+                'status' => 'wild'
+            ],
+            [
+                'name' => 'Charmander',
+                'type' => 'Fire',
+                'hp' => 39,
+                'status' => 'captured'
+            ],
+            [
+                'name' => 'Eevee',
+                'type' => 'Normal',
+                'hp' => 55,
+                'status' => 'wild'
+            ],
         ];
 
         foreach ($pokemonData as $pokemon) {
@@ -46,6 +70,6 @@ class PokemonSeeder extends Seeder
         }
 
         // Crear Pokemon adicionales usando el factory
-        PokemonModel::factory()->count(6)->create();
+        // PokemonModel::factory()->count(6)->create();
     }
 }
